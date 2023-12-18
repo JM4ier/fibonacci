@@ -25,13 +25,26 @@ static void mat_swap(mpz_t *a, mpz_t *b) {
 	mpz_swap(a[3], b[3]);
 }
 
+static void mat_mod(mpz_t *a, ll p) {
+	if (p) {
+		mpz_mod_ui(a[0], a[0], p);
+		mpz_mod_ui(a[1], a[1], p);
+		mpz_mod_ui(a[2], a[2], p);
+		mpz_mod_ui(a[3], a[3], p);
+	}
+}
+
 int main(int argc, char **argv) {
 	if (argc < 2) {
-		printf("usage: %s <number>\n", argv[0]);
+		printf("usage: %s number [modulus]\n", argv[0]);
 		return -1;
 	}
 
 	ll n = atoll(argv[1]);
+	ll p = 0;
+	if (argc > 2) {
+		p = atoll(argv[2]);
+	}
 
 	mpz_t a[4];
 	mpz_t b[4];
@@ -54,10 +67,12 @@ int main(int argc, char **argv) {
 		if (m & n) {
 			mat_mul(b, a, c);
 			mat_swap(b, c);
+			mat_mod(c, p);
 		}
 
 		mat_mul(b, a, a);
 		mat_swap(a, b);
+		mat_mod(a, p);
 	}
 
 	mpz_out_str(stdout, 10, c[1]);
